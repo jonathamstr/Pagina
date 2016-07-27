@@ -2,3 +2,10 @@
 {% block content %}
 <p>Something in here</p>
 {% endblock %}
+{% block script %}
+<script>
+$(document).ready(function(){
+	$('a[href="/"]').parent().addClass('active');
+})
+</script>
+{% endblock %}

@@ -2,7 +2,7 @@
 <html lang="en">
 
 <head>
-	<title>Harrison Kinsley</title>
+	<title>Avattia:Camiones</title>
 	<meta charset="utf-8" />
 	{% load staticfiles %}
 	<link rel="stylesheet" href="{% static 'main/css/bootstrap.min.css' %}" type = "text/css"/>
@@ -13,25 +13,30 @@
 		body {
 		  height:100%
 		}
+		#nav{
+			padding-top: 10px;
+		}
 	</style>
 </head>
 
 <body class="body" style="background-color:#f6f6f6">
-	<div class="container-fluid" style="min-height:95%; ">
-		<div class="row">
+	<div class="container-fluid" style="min-height:95%; " id="nav">
+
+        <div class="col-sm-4">
+          <ul class="nav nav-pills">
+        <li role="presentation"><a href="/">Home</a></li>
+        <li role="presentation"><a href="/contact">Profile</a></li>
+        <li role="presentation"><a href="/consulta">Consulta</a></li>
+      </ul>
+        </div>
 			  <div class="col-sm-2">
 				  <br>
 				  <center>
-					<!--<img src="{% static 'personal/img/profile.jpg' %}" class="responsive-img" style='max-height:100px;' alt="face">
-          http://maquive.com/wp-content/uploads/2014/06/camiones-daf-burgos.jpg
-          -->
-          <img src="http://maquive.com/wp-content/uploads/2014/06/camiones-daf-burgos.jpg" class="responsive-img" style='max-height:100px;' alt="face">
-          </center>
-			  </div>
+
 			  <div class="col-sm-10">
 				  <br>
 				  <center>
-				  <h3>Programming, Teaching, Entrepreneurship</h3>
+				  <h3>Registro y Manejo de Informacion</h3>
 				  </center>
 			  </div>
 		</div><hr>
@@ -43,13 +48,7 @@
 		  <br>
 		   <!-- Great, til you resize. -->
 			<!--<div class="well bs-sidebar affix" id="sidebar" style="background-color:#fff">-->
-			<div class="well bs-sidebar" id="sidebar" style="background-color:#fff">
-			  <ul class="nav nav-pills nav-stacked">
-				<li><a href='/'>Home</a></li>
-				<li><a href='/blog/'>Blog</a></li>
-				<li><a href='/contact/'>Contact</a></li>
-			  </ul>
-			</div> <!--well bs-sidebar affix-->
+			 <!--well bs-sidebar affix-->
 		  </div> <!--col-sm-2-->
 		  <div class="col-sm-10">
 
@@ -68,5 +67,14 @@
 	</footer>
 
 </body>
-
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+{% block script %}
+<script>
+$(document).ready(function(){
+	$('li').children('a').click(function(){
+		$('li').removeClass('active');
+	})
+})
+</script>
+{% endblock %}
 </html>
