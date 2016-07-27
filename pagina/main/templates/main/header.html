@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html ng-app="store" lang="en">
 
 <head>
 	<title>Avattia:Camiones</title>
@@ -20,6 +20,8 @@
 </head>
 
 <body class="body" style="background-color:#f6f6f6">
+	<script type='text/javascript' src="{% static 'main/js/angular.min.js' %}"></script>
+		<script type='text/javascript' src="{% static 'main/js/app.js' %}"></script>
 	<div class="container-fluid" style="min-height:95%; " id="nav">
 
         <div class="col-sm-4">
@@ -29,16 +31,16 @@
         <li role="presentation"><a href="/consulta">Consulta</a></li>
       </ul>
         </div>
-			  <div class="col-sm-2">
+			  <div class="col-sm-4" ng-controller="StoreController as store">
 				  <br>
 				  <center>
 
-			  <div class="col-sm-10">
+					<h2>{% verbatim %} {{store.product.name}} {% endverbatim %}</h2>
 				  <br>
 				  <center>
-				  <h3>Registro y Manejo de Informacion</h3>
+				  <h4>Registro y Manejo de Informacion</h4>
 				  </center>
-			  </div>
+
 		</div><hr>
 
 		<div class="row">
