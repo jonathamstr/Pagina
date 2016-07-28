@@ -1,6 +1,4 @@
-{% extends "main/header.html" %}
 
-{% block content %}
 
 	   <div class="container">
        <form class="" action="/consulta/" method="POST"> {% csrf_token %}
@@ -32,14 +30,3 @@
 		</table>
 	</div>
 		 {% endif %}
-		 <div class='container'>
-			 
-		 </div>
-{% endblock %}
-{% block script %}
-<script>
-$(document).ready(function(){
-	$('a[href="/consulta"]').parent().addClass('active');
-})
-</script>
-{% endblock %}

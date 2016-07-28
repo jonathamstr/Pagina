@@ -1,8 +1,10 @@
 from django.shortcuts import render
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect , HttpResponse ,JsonResponse
+from django.core import serializers
 from os import getenv
 import pymssql
 import time
+import json
 
 server = "SERVERAVATTIA\AVATTIA"
 user = "sa"
@@ -54,3 +56,16 @@ def consulta(request):
         start = time.time()-start
         return render(request,'main/consulta.html',{'fch': [dsd ,hst],'result':resulta,'tiempo':start})
         #return render_to_response('main/home.html',{},RequestContext(request))
+
+def searchInfo(request):
+    if request.is_ajax() and request.method == "POST":
+        dsd = request.POST['desde']
+        hst =request.POST['hasta']
+        print(dsd, hst)
+        resultado = getVen(dsd,hst)
+        tab = [{'producto': x[0], 'venta': float(x[1]),'cantidad': int(x[2]) , 'desc': x[3] } for x in resultado]
+        print(tab[0])
+        message = "Yes, AJAX!"
+    else:
+        message = "Not Ajax"
+    return HttpResponse(json.dumps(tab))
