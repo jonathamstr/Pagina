@@ -1,4 +1,5 @@
-var csrftoken = Cookies.get('csrftoken');
+
+/*var csrftoken = Cookies.get('csrftoken');
 
 function csrfSafeMethod(method) {
     // these HTTP methods do not require CSRF protection
@@ -22,9 +23,10 @@ $(document).ready(function(){
             success: function(data){
                  app.resultado = JSON.parse(data);
                  app.lon = app.resultado.length;
-                 alert(app.lon)
+                 angular.element(document.getElementById('store')).scope().$apply();
             }
         });
         return false;
     });
 });
+*/
