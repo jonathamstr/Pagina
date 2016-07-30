@@ -14,24 +14,42 @@ $.ajaxSetup({
 });
     app = angular.module('store', []);
     app.controller('ControladorFecha',function($scope){
+        $scope.loading = false;
+        $scope.resulttotal = []
         $scope.result = []
         $scope.tam = $scope.result.length;
         $scope.op = 1;
         this.search = function(){
+            $scope.loading = true;
             var dsd = $('#desde').val();
-           //event.preventDefault();
-           $.ajax({
+            $("#btnSearch").attr("disabled",'');
+            $("#btnText").html("Buscando");
+            //event.preventDefault();
+            $.ajax({
                type: "POST",
                url : "/searchInfo/",
                data : { 'desde' :dsd, 'hasta': $('#hasta').val() },
                success: function(data){
-                   $scope.$apply(function(){
-                    $scope.result = JSON.parse(data).sort(function(a,b){return a['producto'].localeCompare(b['producto'])});
-                    $scope.tam = $scope.result.length;
-                });
-               }
-           });
+                    $scope.$apply(function(){
+
+                        $scope.resulttotal = JSON.parse(data).sort(function(a,b){return a['producto'].localeCompare(b['producto'])});
+                        $scope.result = $scope.resulttotal.slice(0,1000);
+                        $scope.tam = $scope.result.length;
+                        $scope.loading = false;
+                        $("#btnSearch").removeAttr("disabled");
+                        $("#btnText").html("Buscar");
+                    });
+                },
+                error: function(){
+                    $scope.loading = false;
+                    $("#btnSearch").removeAttr("disabled");
+                    $("#btnText").html("Buscar");
+                    alert('Unexpected Error');
+                }
+            });
+
            return false;
+
        };
 
        this.orderP = function(){

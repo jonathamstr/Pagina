@@ -64,6 +64,21 @@ def searchInfo(request):
         resultado = getVen(dsd,hst)
         tab = [{'producto': x[0], 'venta': float(x[1]),'cantidad': int(x[2]) , 'desc': x[3] } for x in resultado]
         message = "Yes, AJAX!"
+        consultaTablas('EjerciciosJonathan')
     else:
         message = "Not Ajax"
     return HttpResponse(json.dumps(tab))
+
+def consultaBase(tabla,*args):
+
+    pass
+
+def consultaTablas(base):
+    conn = pymssql.connect(server,user,password, base)
+    cursor = conn.cursor()
+    cursor.execute('SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES')
+    result = cursor.fetchall()
+    pass
+
+def formatQuerytoJson(cosulta,*agrs):
+    pass
