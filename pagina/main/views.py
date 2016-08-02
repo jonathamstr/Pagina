@@ -5,6 +5,7 @@ from os import getenv
 import pymssql
 import time
 import json
+import re
 
 server = "SERVERAVATTIA\AVATTIA"
 user = "sa"
@@ -73,12 +74,38 @@ def consultaBase(tabla,*args):
 
     pass
 
-def consultaTablas(base):
+def getTables(base):
     conn = pymssql.connect(server,user,password, base)
     cursor = conn.cursor()
     cursor.execute('SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES')
     result = cursor.fetchall()
-    pass
+    return result
+
+def searchTbl(request):
+    message = []
+    if request.is_ajax() and request.method == "POST":
+        message = getTables('EjerciciosJonathan')
+    return HttpResponse(json.dumps(message))
+
+def getColumns(table,base):
+    conn = pymssql.connect(server,user,password, base)
+    cursor = conn.cursor()
+    print(table)
+    table = re.findall(r'[a-zA-Z0-9_]+',table)
+    print("!!!!!!!!!!!!!!!!!!!!!!!!",table)
+    cursor.execute('SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = N\''+ table[0] + "\'")
+    result = cursor.fetchall()
+    return result
+
+
+def  searchColumns(request):
+    message = []
+    if request.is_ajax() and request.method == "POST":
+        message = getColumns(request.POST['tabla'],'EjerciciosJonathan')
+        print("!!!Something ",message," in here!!!!!")
+    return HttpResponse(json.dumps(message))
+
+
 
 def formatQuerytoJson(cosulta,*agrs):
     pass

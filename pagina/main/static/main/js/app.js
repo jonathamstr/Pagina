@@ -13,18 +13,23 @@ $.ajaxSetup({
     }
 });
     app = angular.module('store', []);
+
     app.controller('ControladorFecha',function($scope){
         $scope.loading = false;
         $scope.resulttotal = []
         $scope.result = []
+        $scope.tablas = []
         $scope.tam = $scope.result.length;
         $scope.op = 1;
+        $scope.columns = []
+        $scope.selcolums = []
         this.search = function(){
             $scope.loading = true;
             var dsd = $('#desde').val();
             $("#btnSearch").attr("disabled",'');
             $("#btnText").html("Buscando");
             //event.preventDefault();
+
             $.ajax({
                type: "POST",
                url : "/searchInfo/",
@@ -53,8 +58,7 @@ $.ajaxSetup({
        };
 
        this.orderP = function(){
-
-         //  $scope.$apply(function(){
+           //Ordena las cosas por medio de alfabetico en la tabla
                 if($scope.op == 1){
                             $scope.op = 0 ;
                     $scope.result = $scope.result.sort(function(a,b){return b['producto'].localeCompare(a['producto'])});
@@ -64,9 +68,55 @@ $.ajaxSetup({
 
                 $scope.result = $scope.result.sort(function(a,b){return a['producto'].localeCompare(b['producto'])});
             }
-
-          // });
        };
+
+
+       this.searchTab = function(){
+           $scope.loading = true;
+           $("#btnTbl").attr('disabled','');
+           $("#btnTextTbl").html('Buscando');
+           $.ajax({
+               type: "POST",
+               url : "/searchTbl/",
+               success: function(data){
+                   $scope.$apply(function(){
+                       $scope.tablas = JSON.parse(data);
+                       $("#btnTbl").removeAttr('disabled');
+                       $("#btnTextTbl").html('Buscar');
+                       $scope.loading = false;
+                   });
+               },
+               error: function(data){
+                   $scope.$apply(function(){
+                       $scope.loading = false;
+                        $("#btnTbl").removeAttr('disabled');
+                        $("#btnTextTbl").html('Buscar');
+                        alert('Error inesperado');
+
+                    });
+               }
+           });
+       };
+
+       this.searchColumns = function() {
+          var tabla = $("#tablaSel").val();
+          $.ajax({
+              type : "POST",
+              url : "/searchColumns/" ,
+              data : { 'tabla': tabla } ,
+              success : function(data){
+                $scope.$apply(function(){
+                    alert('Working');
+                    $scope.columns = JSON.parse(data);
+                });
+              },
+              error : function(data){
+                  alert("Error inesperado");
+              }
+          });
+       };
+
+
     });
 
 
