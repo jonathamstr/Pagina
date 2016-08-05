@@ -18,6 +18,7 @@
 	<script src="{% static 'main/js/bootstrap.min.js' %}"></script>
 	<script type='text/javascript' src="{% static 'main/js/angular.min.js' %}"></script>
 	<script  type='text/javascript' src="{% static 'main/js/js.cookie.js' %}"></script>
+	<script  type='text/javascript' src="{% static 'main/js/dirPagination.js' %}"></script>
 	<script type='text/javascript' src="{% static 'main/js/app.js' %}"></script>
 	<script  type='text/javascript' src="{% static 'main/js/data.js' %}"></script>
 
@@ -93,8 +94,8 @@
   									</button>
   									<ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
 										{% verbatim %}
-										<li ng-repeat="column in columns">
-											<input type="checkbox"  value="{{column}}">
+										<li ng-repeat="column in columns" class="tableColumn">
+											<input  type="checkbox"  value="{{column}}">
 	    										{{column}}
 			  								</input>
 										</li>
@@ -105,9 +106,9 @@
 
 							</div>
 
-						   <div ng-controller="ControladorFecha as control">
+						   <div ng-controller="ControladorFecha as control" class="row">
 					       		<form name="search" id="search" ng-submit="control.search()" > {% csrf_token %}
-								  	<div class="form-group">
+								  	<div class="form-group col-md-4">
 					                	<label for="desde">Desde:</label>
 					                	<input type="date" class="form-control" id="desde" required >
 					                	<label for="hasta">Hasta:</label>
@@ -119,41 +120,36 @@
 
 					        		</div>
 					       		</form>
+								<form class="form-inline">
+									<div class="form-group">
+										<label >Search</label>
+										<input type="text" ng-model="search" class="form-control" placeholder="Buscar">
+									</div>
+								</form>
 								<div class='table-responsive'>
 									{% verbatim %}
 
 									<table class="table" ng-show="tam !== 0 ">
-										<tr><th><a href ng-click="control.orderP()">Producto<span class="glyphicon glyphicon-sort-by-alphabet" aria-hidden="true"></span>
+										<tr>
 
-										</a></th><th>Venta Total</th><th>Cantidad Vendida</th><th>Descripcion</th></tr>
+											<th><a href ng-click="control.orderP('producto')">Producto<span class="glyphicon glyphicon-sort" aria-hidden="true"></span></a></th>
+											<th><a href ng-click="control.orderP('venta')">Venta Total</a></th>
+											<th><a href ng-click="control.orderP('cantidad')">Cantidad Vendida</a></th>
+											<th><a href ng-click="control.orderP('desc')">Descripcion</a></th>
+										</tr>
 
-											<tr ng-repeat="prod in result"><td>{{prod.producto}}</td><td>{{prod.venta}}</td><td>{{prod.cantidad}}</td><td>{{prod.desc}}</td></tr>
+											<tr dir-paginate="prod in result | orderBy:propertyName:reverse | filter: search  | itemsPerPage: 15"><td>{{prod.producto}}</td><td>{{prod.venta}}</td><td>{{prod.cantidad}}</td><td>{{prod.desc}}</td></tr>
 
 									</table>
+									<dir-pagination-controls
+       									max-size="5"
+       									direction-links="true"
+       									boundary-links="true" >
+    								</dir-pagination-controls>
+
 									{% endverbatim %}
 								</div>
 							</div>
-
-
-							 <!--{% if fch %}
-							 	<p>Consulta desde  {{fch.0}} hasta el {{fch.1}}
-									<br>
-									Tiempo de ejecucion {{tiempo}}
-								</p>
-								<div class="table-responsive">
-								<table class="table">
-										<tr><th>Producto</th><th>Venta Total</th><th>Cantidad Vendida</th><th>Descripcion</th></tr>
-					      {% for r in result %}
-								<tr>
-									{% for d in r%}
-									<td>{{d}}</td>
-									{% endfor %}
-								</tr>
-								{% endfor %}
-							</table>
-						</div>
-							 {% endif %} -->
-
 
 				</div>
 		  </div>

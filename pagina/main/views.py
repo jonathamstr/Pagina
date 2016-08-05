@@ -59,13 +59,15 @@ def consulta(request):
         #return render_to_response('main/home.html',{},RequestContext(request))
 
 def searchInfo(request):
+    print('No esta funcionando0')
     if request.is_ajax() and request.method == "POST":
         dsd = request.POST['desde']
         hst = request.POST['hasta']
         resultado = getVen(dsd,hst)
         tab = [{'producto': x[0], 'venta': float(x[1]),'cantidad': int(x[2]) , 'desc': x[3] } for x in resultado]
         message = "Yes, AJAX!"
-        consultaTablas('EjerciciosJonathan')
+        #consultaTablas('EjerciciosJonathan')
+        print('Aqui llego')
     else:
         message = "Not Ajax"
     return HttpResponse(json.dumps(tab))
@@ -77,7 +79,7 @@ def consultaBase(tabla,*args):
 def getTables(base):
     conn = pymssql.connect(server,user,password, base)
     cursor = conn.cursor()
-    cursor.execute('SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES')
+    cursor.execute('SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES order by TABLE_NAME asc')
     result = cursor.fetchall()
     return result
 
@@ -92,7 +94,6 @@ def getColumns(table,base):
     cursor = conn.cursor()
     print(table)
     table = re.findall(r'[a-zA-Z0-9_]+',table)
-    print("!!!!!!!!!!!!!!!!!!!!!!!!",table)
     cursor.execute('SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = N\''+ table[0] + "\'")
     result = cursor.fetchall()
     return result
@@ -101,8 +102,11 @@ def getColumns(table,base):
 def  searchColumns(request):
     message = []
     if request.is_ajax() and request.method == "POST":
-        message = getColumns(request.POST['tabla'],'EjerciciosJonathan')
-        print("!!!Something ",message," in here!!!!!")
+            message = getColumns(request.POST['tabla'],'EjerciciosJonathan')
+            print(message)
+            message = [re.findall(r'[a-zA-Z0-9_]+',e[0]) for e in message]
+            message = [x[0] for x in message]
+            print("!!!Something ",message," in here!!!!!")
     return HttpResponse(json.dumps(message))
 
 

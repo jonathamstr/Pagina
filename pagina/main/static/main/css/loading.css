@@ -17,3 +17,10 @@ body {
   padding-top: 70px;
   height:100%;
 }
+.tableColumn{
+    margin-left: 10px;
+    padding-left: 15px;
+}
+nav{
+    margin-top: -2px;
+}
