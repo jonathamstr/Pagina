@@ -51,6 +51,10 @@
             <li role="presentation" ng-class="{ active:tab === 2}" ><a href ng-click="tab = 2">Profile</a></li>
             <li role="presentation" ng-class="{ active:tab === 3}" ><a href ng-click="tab = 3">Consulta</a></li>
 		</ul>
+		<form class="navbar-form navbar-right" action="/logout">
+			{{user}}
+           <button type="submit" class="btn btn-danger">Cerrar Sesion</button>
+         </form>
 	  </div><!--/.nav-collapse -->
 	</div>
   </nav>
@@ -123,13 +127,14 @@
 								<form class="form-inline">
 									<div class="form-group">
 										<label >Search</label>
-										<input type="text" ng-model="search" class="form-control" placeholder="Buscar">
+										<input type="text" ng-model="search" class="form-control" placeholder="Buscar" value=""></input>
 									</div>
 								</form>
 								<div class='table-responsive'>
 									{% verbatim %}
 
 									<table class="table" ng-show="tam !== 0 ">
+
 										<tr>
 
 											<th><a href ng-click="control.orderP('producto')">Producto<span class="glyphicon glyphicon-sort" aria-hidden="true"></span></a></th>

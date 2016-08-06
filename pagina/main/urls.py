@@ -10,4 +10,6 @@ urlpatterns = [
     url(r'^searchInfo/',views.searchInfo , name="searchInfo"),
     url(r'^searchTbl/',views.searchTbl , name="searchTbl"),
     url(r'^searchColumns',views.searchColumns, name="searchColumns"),
+    url(r'^login/',views.login, name="login"),
+    url(r'^logout/',views.logout, name="logout"),
     ]

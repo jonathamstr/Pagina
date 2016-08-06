@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render , redirect
 from django.http import HttpResponseRedirect , HttpResponse ,JsonResponse
 from django.core import serializers
 from os import getenv
@@ -35,10 +35,22 @@ def getVen(dsd,hst):
     conn.close()
     return result
 
+def getUser(base,usuario,passw):
+    conn = pymssql.connect(server,user,password, base)
+    cursor = conn.cursor()
+    #cursor.execute('SELECT sum(dbo.p_vede.Importe) as Total,sum(dbo.p_vede.Cantidad) as Cantidad, dbo.p_vede.Producto, dbo.p_prod.desc from dbo.p_vede where fecha between '+dsd+' AND ' + hst +  )
+    cursor.execute('SELECT usuario , estatus, tipo ,  identifica FROM p_usua WHERE usuario = \''+ usuario+ "' AND password = '"+ passw + "'"  )
+    result = cursor.fetchone()
+    conn.close()
+    return result
+
 # Create your views here.
 
 def index(request):
-    return render(request, 'main/home.html')
+    if request.session.get('user'):
+        return render(request, 'main/home.html',{'user':request.session.get('user')})
+    else:
+        return render(request, 'main/auth.html' )
 
 def contact(request):
     start = time.time()
@@ -109,7 +121,21 @@ def  searchColumns(request):
             print("!!!Something ",message," in here!!!!!")
     return HttpResponse(json.dumps(message))
 
+def login(request):
+    if request.method == "POST":
+            user = request.POST['usuario']
+            passw = request.POST['pass']
+            result = getUser('EjerciciosJonathan',user,passw)
+            if result:
+                request.session['user'] = user
+                request.session.set_expiry(1800)
+                return redirect("/")
+            else:
+                return "No estas"
 
+def logout(request):
+    del request.session['user']
+    return redirect("/")
 
 def formatQuerytoJson(cosulta,*agrs):
     pass
