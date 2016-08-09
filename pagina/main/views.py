@@ -42,7 +42,14 @@ def getUser(base,usuario,passw):
     cursor.execute('SELECT usuario , estatus, tipo ,  identifica FROM p_usua WHERE usuario = \''+ usuario+ "' AND password = '"+ passw + "'"  )
     result = cursor.fetchone()
     conn.close()
-    return result
+    print(result)
+    if result:
+        print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
+        return result
+    else:
+        print('*******************************************************')
+        return False 
+    
 
 # Create your views here.
 
@@ -126,12 +133,13 @@ def login(request):
             user = request.POST['usuario']
             passw = request.POST['pass']
             result = getUser('EjerciciosJonathan',user,passw)
+            print(result)
             if result:
                 request.session['user'] = user
                 request.session.set_expiry(1800)
-                return redirect("/")
-            else:
-                return "No estas"
+            return redirect("/")
+            
+                
 
 def logout(request):
     del request.session['user']

@@ -1,3 +1,4 @@
+
 var csrftoken = Cookies.get('csrftoken');
 
 function csrfSafeMethod(method) {
@@ -11,134 +12,116 @@ $.ajaxSetup({
         }
     }
 });
-app = angular.module('store', ['angularUtils.directives.dirPagination']);
+    app = angular.module('store', []);
 
-app.controller('ControladorFecha', function($scope) {
-    $scope.loading = false;
-    $scope.resulttotal = []
-    $scope.result = []
-    $scope.tablas = []
-    $scope.tam = $scope.result.length;
-    $scope.op = 1;
-    $scope.columns = []
-    $scope.selcolums = []
-    $scope.propertyName = null;
-    $scope.reverse = false;
-    $scope.config = {
-        itemsPerPage: 5,
-        fillLastPage: true
-    }
+    app.controller('ControladorFecha',function($scope){
+        $scope.loading = false;
+        $scope.resulttotal = []
+        $scope.result = []
+        $scope.tablas = []
+        $scope.tam = $scope.result.length;
+        $scope.op = 1;
+        $scope.columns = []
+        $scope.selcolums = []
+        this.search = function(){
+            $scope.loading = true;
+            var dsd = $('#desde').val();
+            $("#btnSearch").attr("disabled",'');
+            $("#btnText").html("Buscando");
+            //event.preventDefault();
 
-    this.search = function() {
-        $scope.loading = true;
-        var dsd = $('#desde').val();
-        $("#btnSearch").attr("disabled", '');
-        $("#btnText").html("Buscando");
-        //event.preventDefault();
+            $.ajax({
+               type: "POST",
+               url : "/searchInfo/",
+               data : { 'desde' :dsd, 'hasta': $('#hasta').val() },
+               success: function(data){
+                    $scope.$apply(function(){
 
-        $.ajax({
-            type: "POST",
-            url: "/searchInfo/",
-            data: {
-                'desde': dsd,
-                'hasta': $('#hasta').val()
-            },
-            success: function(data) {
-                $scope.$apply(function() {
-                    $scope.resulttotal = JSON.parse(data).sort(function(a, b) {
-                        return a['producto'].localeCompare(b['producto'])
+                        $scope.resulttotal = JSON.parse(data).sort(function(a,b){return a['producto'].localeCompare(b['producto'])});
+                        $scope.result = $scope.resulttotal.slice(0,1000);
+                        $scope.tam = $scope.result.length;
+                        $scope.loading = false;
+                        $("#btnSearch").removeAttr("disabled");
+                        $("#btnText").html("Buscar");
                     });
-                    $scope.result = $scope.resulttotal;
-                    $scope.tam = $scope.result.length;
+                },
+                error: function(){
                     $scope.loading = false;
                     $("#btnSearch").removeAttr("disabled");
                     $("#btnText").html("Buscar");
-                });
-            },
-            error: function(data) {
-                $scope.loading = false;
-                $("#btnSearch").removeAttr("disabled");
-                $("#btnText").html("Buscar");
+                    alert('Unexpected Error');
+                }
+            });
+
+           return false;
+
+       };
+
+       this.orderP = function(){
+           //Ordena las cosas por medio de alfabetico en la tabla
+                if($scope.op == 1){
+                            $scope.op = 0 ;
+                    $scope.result = $scope.result.sort(function(a,b){return b['producto'].localeCompare(a['producto'])});
             }
-        });
+            else{
+                        $scope.op = 1 ;
 
-        return false;
-
-    };
-
-    this.orderP = function(propertyName) {
-        //Ordena las cosas por medio de alfabetico en la tabla
-        $scope.reverse = ($scope.propertyName === propertyName) ? !$scope.reverse : false;
-        $scope.propertyName = propertyName;
-        /*    if($scope.op == 1){
-                        $scope.op = 0 ;
-                $scope.result = $scope.result.sort(function(a,b){return b['producto'].localeCompare(a['producto'])});
-        }
-        else{
-                    $scope.op = 1 ;
-
-            $scope.result = $scope.result.sort(function(a,b){return a['producto'].localeCompare(b['producto'])});
-        } */
-    };
-
-
-    this.searchTab = function() {
-        $scope.loading = true;
-        $("#btnTbl").attr('disabled', '');
-        $("#btnTextTbl").html('Buscando');
-        $.ajax({
-            type: "POST",
-            url: "/searchTbl/",
-            success: function(data) {
-                $scope.$apply(function() {
-                    $scope.tablas = JSON.parse(data);
-                    $("#btnTbl").removeAttr('disabled');
-                    $("#btnTextTbl").html('Buscar');
-                    $scope.loading = false;
-                });
-            },
-            error: function(data) {
-                $scope.$apply(function() {
-                    $scope.loading = false;
-                    $("#btnTbl").removeAttr('disabled');
-                    $("#btnTextTbl").html('Buscar');
-                    alert('Error inesperado');
-
-                });
+                $scope.result = $scope.result.sort(function(a,b){return a['producto'].localeCompare(b['producto'])});
             }
-        });
-    };
+       };
 
-    this.searchColumns = function() {
-        var tabla = $("#tablaSel").val();
-        $.ajax({
-            type: "POST",
-            url: "/searchColumns/",
-            data: {
-                'tabla': tabla
-            },
-            success: function(data) {
-                $scope.$apply(function() {
+
+       this.searchTab = function(){
+           $scope.loading = true;
+           $("#btnTbl").attr('disabled','');
+           $("#btnTextTbl").html('Buscando');
+           $.ajax({
+               type: "POST",
+               url : "/searchTbl/",
+               success: function(data){
+                   $scope.$apply(function(){
+                       $scope.tablas = JSON.parse(data);
+                       $("#btnTbl").removeAttr('disabled');
+                       $("#btnTextTbl").html('Buscar');
+                       $scope.loading = false;
+                   });
+               },
+               error: function(data){
+                   $scope.$apply(function(){
+                       $scope.loading = false;
+                        $("#btnTbl").removeAttr('disabled');
+                        $("#btnTextTbl").html('Buscar');
+                        alert('Error inesperado');
+
+                    });
+               }
+           });
+       };
+
+       this.searchColumns = function() {
+          var tabla = $("#tablaSel").val();
+          $.ajax({
+              type : "POST",
+              url : "/searchColumns/" ,
+              data : { 'tabla': tabla } ,
+              success : function(data){
+                $scope.$apply(function(){
+                    alert('Working');
                     $scope.columns = JSON.parse(data);
                 });
-            },
-            error: function(data) {
-                alert("Error inesperado");
-            }
-        });
-    };
-
-    this.getRows = function() {
-
-    };
+              },
+              error : function(data){
+                  alert("Error inesperado");
+              }
+          });
+       };
 
 
+    });
 
-});
 
-
-app.controller('StoreController', function() {
-    this.product = gem;
+    app.controller('StoreController',function(){
+        this.product = gem;
 
 
     /*    this.changeTable = function(){
@@ -157,11 +140,11 @@ app.controller('StoreController', function() {
            });
            console.log(app.result);
        };*/
-});
+    });
 
-var gem = {
-    name: 'Dodecahedron',
-    price: 2.95,
-    description: 'This is a precious gem to do great things.',
-    canPurchase: true
-}
+    var gem = {
+      name: 'Dodecahedron',
+      price: 2.95,
+      description: 'This is a precious gem to do great things.',
+      canPurchase: true
+    }

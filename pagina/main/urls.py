@@ -1,6 +1,7 @@
 from django.conf.urls import url,include
 from django.conf import settings
 from django.conf.urls.static import static
+#import django.views.static.server
 from . import views
 
 urlpatterns = [
@@ -12,4 +13,5 @@ urlpatterns = [
     url(r'^searchColumns',views.searchColumns, name="searchColumns"),
     url(r'^login/',views.login, name="login"),
     url(r'^logout/',views.logout, name="logout"),
+    #url(r'^static/(?P<path>.*)$', 'django.views.static.serve', {'document_root':settings.STATIC_ROOT}),
     ]

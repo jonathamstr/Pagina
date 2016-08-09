@@ -24,6 +24,8 @@ SECRET_KEY = '&yp4_@9$fwvyg+k4y!7xilizc1@e!+n_xphor4%+z3jmy=%6e@'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
+CURRENT_DIR = os.path.dirname(__file__)
+OUTSIDE_DIR = CURRENT_DIR.split('library.zip')[0]
 
 ALLOWED_HOSTS = []
 
@@ -119,8 +121,14 @@ USE_L10N = True
 
 USE_TZ = True
 
+TEMPLATE_LOADERS = (
+    'django.template.loaders.filesystem.load_template_source',
+    'django.template.loaders.app_directories.load_template_source',
+    #'django.template.loaders.eggs.load_template_source',
+)
+
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.9/howto/static-files/
 
-STATIC_URL = '/static/'
+STATIC_ROOT = '/static'
